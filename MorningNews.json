@@ -1,0 +1,2734 @@
+{
+  "active": true,
+  "activeVersion": {
+    "updatedAt": "2026-01-01T16:37:27.868Z",
+    "createdAt": "2026-01-01T16:36:51.292Z",
+    "versionId": "0f6a0b2a-e370-41bf-9801-154699ad2d06",
+    "workflowId": "7hJz5eQk12axtKwc",
+    "nodes": [
+      {
+        "parameters": {
+          "operation": "subtractFromDate",
+          "magnitude": "={{ $now }}",
+          "timeUnit": "hours",
+          "duration": 24,
+          "outputFieldName": "Past24Hours",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          896,
+          384
+        ],
+        "id": "773a18c2-0f78-4671-9b24-7818520c2b22",
+        "name": "GetPast24Hours"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "db1058b7-e03e-4e73-970b-687a1325c756",
+                "leftValue": "={{ $('RemoveDuplicates').item.json.isoDate.toDateTime().toLocal() }}",
+                "rightValue": "={{ $json.Past24Hours }}",
+                "operator": {
+                  "type": "dateTime",
+                  "operation": "after"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          1120,
+          384
+        ],
+        "id": "51cbc469-44a5-4075-ad0c-4dfb6eaeee80",
+        "name": "FilterBaseOnTime"
+      },
+      {
+        "parameters": {
+          "url": "https://news.google.com/rss/topics/CAAqIQgKIhtDQkFTRGdvSUwyMHZNREpmTjNRU0FtVnVLQUFQAQ?hl=en-US&gl=US&ceid=US%3Aen",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rssFeedRead",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          192
+        ],
+        "id": "22dfceb1-8614-48de-9916-7b424daf726a",
+        "name": "Google News Finance"
+      },
+      {
+        "parameters": {
+          "url": "https://techcrunch.com/feed/",
+          "options": {}
+        },
+        "id": "401f58bd-6aad-4f45-9dc2-7dd0f62524a3",
+        "name": "TechCrunch",
+        "type": "n8n-nodes-base.rssFeedRead",
+        "position": [
+          0,
+          0
+        ],
+        "typeVersion": 1.2
+      },
+      {
+        "parameters": {
+          "url": "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rssFeedRead",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          384
+        ],
+        "id": "410dae7f-3b29-4d70-9771-9f7934b05748",
+        "name": "Google News World"
+      },
+      {
+        "parameters": {
+          "url": "https://news.google.com/rss/topics/CAAqIggKIhxDQkFTRHdvSkwyMHZNRGxqTjNjd0VnSmxiaWdBUAE?hl=en-US&gl=US&ceid=US%3Aen",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rssFeedRead",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          768
+        ],
+        "id": "fb429791-698a-4f97-b259-f1b8e8c5a213",
+        "name": "Google News US"
+      },
+      {
+        "parameters": {
+          "url": "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx6TVdZU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rssFeedRead",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          576
+        ],
+        "id": "16f85777-ff07-4cc2-b1b6-4538d8b7c54c",
+        "name": "Google News Business"
+      },
+      {
+        "parameters": {
+          "numberInputs": 5
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          448,
+          336
+        ],
+        "id": "4b8a34c3-f72a-4b24-920a-964a83558e11",
+        "name": "MergeAllRSS"
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          1280,
+          1136
+        ],
+        "id": "5c7e692a-bd32-44ad-9dc5-a67f7c152d7f",
+        "name": "AggregateToList"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c51f320e-4fb8-4bd4-8e36-9330e251936e",
+                "name": "url",
+                "type": "string",
+                "value": "={{ JSON.parse(JSON.parse($json.data.split('\\n\\n')[1])[0][2])[1] }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e5ecb852-583c-485b-b088-b324169c2055",
+        "name": "Decoded url",
+        "type": "n8n-nodes-base.set",
+        "position": [
+          2016,
+          816
+        ],
+        "typeVersion": 3.4
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://news.google.com/_/DotsSplashUi/data/batchexecute",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/x-www-form-urlencoded;charset=UTF-8"
+              },
+              {
+                "name": "User-Agent",
+                "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
+              },
+              {
+                "name": "Referer",
+                "value": "https://www.google.com/"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "form-urlencoded",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "f.req",
+                "value": "={{ $json.f_req }}"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "fullResponse": true,
+                "responseFormat": "text"
+              }
+            }
+          }
+        },
+        "id": "d2f9416a-d91f-42c6-a6f8-522cfd66b3df",
+        "name": "Call decoding URL",
+        "type": "n8n-nodes-base.httpRequest",
+        "position": [
+          1792,
+          816
+        ],
+        "typeVersion": 4.2
+      },
+      {
+        "parameters": {
+          "jsCode": "return $input.all().map(item => {\n    const gn_art_id = item.json.base64Str;\n    const timestamp = item.json.timestamp;\n    const signature = item.json.signature;\n\n    const articlesReq = [\n        'Fbv4je',\n        `[\"garturlreq\",[[\"X\",\"X\",[\"X\",\"X\"],null,null,1,1,\"US:en\",null,1,null,null,null,null,null,0,1],\"X\",\"X\",1,[1,1,1],1,1,null,0,0,null,0],\"${gn_art_id}\",${timestamp},\"${signature}\"]`,\n    ];\n\n    return {\n        json: {\n            f_req: JSON.stringify([[articlesReq]])  // Questo verrà usato nel nodo HTTP Request\n        }\n    };\n});"
+        },
+        "id": "3898a5a8-f212-49e4-bdb8-989e4d44f965",
+        "name": "Prepare decoding variables",
+        "type": "n8n-nodes-base.code",
+        "position": [
+          1568,
+          816
+        ],
+        "typeVersion": 2
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.link }}",
+          "options": {}
+        },
+        "id": "057f69fd-347d-4944-89a2-2c27a875112d",
+        "name": "Get encoded news URL",
+        "type": "n8n-nodes-base.httpRequest",
+        "position": [
+          896,
+          816
+        ],
+        "typeVersion": 4.2
+      },
+      {
+        "parameters": {
+          "content": "## Get encoded content\n\nHere we retrieve HTML content",
+          "height": 400,
+          "width": 220,
+          "color": 3
+        },
+        "id": "ffeebdd8-0600-4d99-b320-3824a71a9073",
+        "name": "Sticky Note4",
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          848,
+          576
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b5a11795-2bd1-412f-a215-f7402bece002",
+                "name": "signature",
+                "type": "string",
+                "value": "={{ $json.signature }}"
+              },
+              {
+                "id": "33267283-3ac8-4d65-9a01-c7f154a7d061",
+                "name": "timestamp",
+                "type": "string",
+                "value": "={{ $json.timestamp }}"
+              },
+              {
+                "id": "bff8f19a-30d6-4307-87da-9b98b26cee8b",
+                "name": "base64Str",
+                "type": "string",
+                "value": "={{ $('Get10NewsForEachField').item.json.guid }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7f2b8dc6-5176-4afe-9305-72014112ac12",
+        "name": "Map needed keys",
+        "type": "n8n-nodes-base.set",
+        "position": [
+          1344,
+          816
+        ],
+        "typeVersion": 3.4
+      },
+      {
+        "parameters": {
+          "operation": "extractHtmlContent",
+          "extractionValues": {
+            "values": [
+              {
+                "key": "signature",
+                "cssSelector": "div",
+                "returnValue": "attribute",
+                "attribute": "data-n-a-sg"
+              },
+              {
+                "key": "timestamp",
+                "cssSelector": "div",
+                "returnValue": "attribute",
+                "attribute": "data-n-a-ts"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "20b1fe2c-8c99-4f15-b98c-adfb103f2be8",
+        "name": "Extract decoding keys",
+        "type": "n8n-nodes-base.html",
+        "position": [
+          1120,
+          816
+        ],
+        "typeVersion": 1.2
+      },
+      {
+        "parameters": {
+          "content": "## Decoding Keys\n\nThe HTML content extracted contains the necessary variables for decoding:\n\n+ signature\n+ timestamp\n+ base64string (already in the URL)",
+          "height": 400,
+          "width": 220
+        },
+        "id": "abdb56b3-2e16-4ff3-9472-91723ab22c69",
+        "name": "Sticky Note5",
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1072,
+          576
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "content": "## Clean output\n\nMapping variables for easy utilization",
+          "height": 400,
+          "width": 220
+        },
+        "id": "ea4676d5-94e2-46c8-822f-901fb5bd3c1a",
+        "name": "Sticky Note6",
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1296,
+          576
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "content": "## Preparing Request\n\nDecoding the request requires specific body content. Here, we build it using the decoding keys.",
+          "height": 400,
+          "width": 220,
+          "color": 3
+        },
+        "id": "0e2d5c96-46a5-4ef3-9b9e-3cbbed6a3ac1",
+        "name": "Sticky Note7",
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1520,
+          576
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "content": "## This is decoding step\n\nSending a request to a specific Google decoding URL",
+          "height": 400,
+          "width": 220,
+          "color": 3
+        },
+        "id": "73931ae2-e922-4595-ae47-4117ccb3719d",
+        "name": "Sticky Note8",
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1744,
+          576
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "content": "## Cleaning URL\n\nGoogle adds some unwanted and random characters at the beginning of the URL",
+          "height": 400,
+          "width": 220
+        },
+        "id": "d4e1c177-e172-461e-a729-65f18dfea291",
+        "name": "Sticky Note9",
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1968,
+          576
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "48012e23-86ed-4d37-b613-e76857796ab9",
+                "name": "link",
+                "value": "={{ $json.link }}",
+                "type": "string"
+              },
+              {
+                "id": "1a585190-d5f0-4363-a328-5921a31dd3d3",
+                "name": "title",
+                "value": "={{ $json.title }}",
+                "type": "string"
+              },
+              {
+                "id": "b7b0e785-d2a7-43a3-ba9b-bab1261ce0bc",
+                "name": "content_snippet",
+                "value": "={{ $json.contentSnippet }}",
+                "type": "string"
+              },
+              {
+                "id": "9cc9bbfd-35f6-463b-b73f-4b424742e20f",
+                "name": "isoDate",
+                "value": "={{ $json.isoDate }}",
+                "type": "string"
+              },
+              {
+                "id": "e3effc7a-9ec8-4762-abe1-388ac777f9d5",
+                "name": "field",
+                "value": "finance",
+                "type": "string"
+              },
+              {
+                "id": "f791ca34-4d1f-4841-8cc9-239e210d73dd",
+                "name": "guid",
+                "value": "={{ $json.guid }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          224,
+          192
+        ],
+        "id": "2707a39e-58a3-40c9-91aa-e4e27235daed",
+        "name": "SetFinanceField"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "48012e23-86ed-4d37-b613-e76857796ab9",
+                "name": "link",
+                "value": "={{ $json.link }}",
+                "type": "string"
+              },
+              {
+                "id": "1a585190-d5f0-4363-a328-5921a31dd3d3",
+                "name": "title",
+                "value": "={{ $json.title }}",
+                "type": "string"
+              },
+              {
+                "id": "b7b0e785-d2a7-43a3-ba9b-bab1261ce0bc",
+                "name": "content_snippet",
+                "value": "={{ $json.contentSnippet }}",
+                "type": "string"
+              },
+              {
+                "id": "a0252fe9-02a1-41f8-934e-1b8106fe23a5",
+                "name": "isoDate",
+                "value": "={{ $json.isoDate }}",
+                "type": "string"
+              },
+              {
+                "id": "689df4ae-725c-44cd-9006-aa4cce448ff0",
+                "name": "field",
+                "value": "tech",
+                "type": "string"
+              },
+              {
+                "id": "fffe80c4-4058-4a44-a342-95fafe5bf250",
+                "name": "guid",
+                "value": "={{ $json.guid }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          224,
+          0
+        ],
+        "id": "33315b0f-b544-4cc7-920e-8e7521ebfada",
+        "name": "SetTechField"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "48012e23-86ed-4d37-b613-e76857796ab9",
+                "name": "link",
+                "value": "={{ $json.link }}",
+                "type": "string"
+              },
+              {
+                "id": "1a585190-d5f0-4363-a328-5921a31dd3d3",
+                "name": "title",
+                "value": "={{ $json.title }}",
+                "type": "string"
+              },
+              {
+                "id": "b7b0e785-d2a7-43a3-ba9b-bab1261ce0bc",
+                "name": "content_snippet",
+                "value": "={{ $json.contentSnippet }}",
+                "type": "string"
+              },
+              {
+                "id": "ab9fa209-e9b6-4bfd-9bd8-6cc253336b43",
+                "name": "isoDate",
+                "value": "={{ $json.isoDate }}",
+                "type": "string"
+              },
+              {
+                "id": "c430678c-f9fe-4ebc-bde1-0a6eb6b2c8d1",
+                "name": "field",
+                "value": "world_news",
+                "type": "string"
+              },
+              {
+                "id": "168a437d-2fa1-4f6a-9e9a-64214827c7c6",
+                "name": "guid",
+                "value": "={{ $json.guid }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          224,
+          384
+        ],
+        "id": "1a2a3d24-6a1c-48ca-8d36-0ed07d9b20d7",
+        "name": "SetWorldNewsField"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "48012e23-86ed-4d37-b613-e76857796ab9",
+                "name": "link",
+                "value": "={{ $json.link }}",
+                "type": "string"
+              },
+              {
+                "id": "1a585190-d5f0-4363-a328-5921a31dd3d3",
+                "name": "title",
+                "value": "={{ $json.title }}",
+                "type": "string"
+              },
+              {
+                "id": "b7b0e785-d2a7-43a3-ba9b-bab1261ce0bc",
+                "name": "content_snippet",
+                "value": "={{ $json.contentSnippet }}",
+                "type": "string"
+              },
+              {
+                "id": "1f640f8f-6b79-45ca-8b72-0dcda2c5cd50",
+                "name": "isoDate",
+                "value": "={{ $json.isoDate }}",
+                "type": "string"
+              },
+              {
+                "id": "bcca7f71-26bd-4b52-9608-97c3ef033c19",
+                "name": "field",
+                "value": "business",
+                "type": "string"
+              },
+              {
+                "id": "579d8a9e-71a6-4476-ae1b-33c92d8e6608",
+                "name": "guid",
+                "value": "={{ $json.guid }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          224,
+          576
+        ],
+        "id": "27f29928-52ff-486f-bfcf-173411aaa305",
+        "name": "SetBusinessField"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "48012e23-86ed-4d37-b613-e76857796ab9",
+                "name": "link",
+                "value": "={{ $json.link }}",
+                "type": "string"
+              },
+              {
+                "id": "1a585190-d5f0-4363-a328-5921a31dd3d3",
+                "name": "title",
+                "value": "={{ $json.title }}",
+                "type": "string"
+              },
+              {
+                "id": "b7b0e785-d2a7-43a3-ba9b-bab1261ce0bc",
+                "name": "content_snippet",
+                "value": "={{ $json.contentSnippet }}",
+                "type": "string"
+              },
+              {
+                "id": "be4de5fb-3970-48e0-9fb8-d221a0a7ded0",
+                "name": "isoDate",
+                "value": "={{ $json.isoDate }}",
+                "type": "string"
+              },
+              {
+                "id": "0558f7fe-4827-4c62-a084-eee996602ff7",
+                "name": "field",
+                "value": "us_news",
+                "type": "string"
+              },
+              {
+                "id": "a028096a-d8e8-47b7-b7a2-c552a132f493",
+                "name": "guid",
+                "value": "={{ $json.guid }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          224,
+          768
+        ],
+        "id": "21656a4c-2a5c-41c9-801c-1cdedbb93fcd",
+        "name": "SetUsNewsField"
+      },
+      {
+        "parameters": {
+          "jsCode": "// 取幾筆資料\nconst num = 10;\n\n// 取得所有輸入的 items\nconst items = $(\"MergeAllRSS\").all()\n\n// 要分組的 field 類別\nconst groups = {};\n\n// 分組 (按照 field)\nfor (const item of items) {\n  const field = item.json.field;\n\n  if (!groups[field]) {\n    groups[field] = [];\n  }\n  groups[field].push(item);\n}\n\n// 為每個 field 取最多 10 筆\nlet result = [];\nfor (const field in groups) {\n  const tenItems = groups[field].slice(0, num);\n  result.push(...tenItems);\n}\n\nreturn result;\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1344,
+          384
+        ],
+        "id": "bcf47698-1993-4d8a-a107-f33ceb6dc2ea",
+        "name": "Get10NewsForEachField"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "48012e23-86ed-4d37-b613-e76857796ab9",
+                "name": "link",
+                "value": "={{ $json.url }}",
+                "type": "string"
+              },
+              {
+                "id": "1a585190-d5f0-4363-a328-5921a31dd3d3",
+                "name": "title",
+                "value": "={{ $('Get10NewsForEachField').item.json.title }}",
+                "type": "string"
+              },
+              {
+                "id": "b7b0e785-d2a7-43a3-ba9b-bab1261ce0bc",
+                "name": "content_snippet",
+                "value": "={{ $('Get10NewsForEachField').item.json.content_snippet }}",
+                "type": "string"
+              },
+              {
+                "id": "689df4ae-725c-44cd-9006-aa4cce448ff0",
+                "name": "field",
+                "value": "={{ $('Get10NewsForEachField').item.json.field }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          896,
+          1040
+        ],
+        "id": "0170190c-0a93-4c4b-a6f7-4aeeb654b319",
+        "name": "SetValues"
+      },
+      {
+        "parameters": {
+          "compare": "selectedFields",
+          "fieldsToCompare": "link",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.removeDuplicates",
+        "typeVersion": 2,
+        "position": [
+          672,
+          384
+        ],
+        "id": "202ea358-5e75-4b85-8152-a0388fc429ea",
+        "name": "RemoveDuplicates"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=以下是今天的新聞資料，請將其視為唯一且完整的資料來源。\n\n## 新聞資料\n{{ JSON.stringify($json, null, 2) }}\n\n---\n\n## 資料結構說明（請務必遵守）\n\n- 所有新聞內容位於 `sections` 欄位中。\n- `sections` 是一個物件（object），key 為新聞分類：\n  - `tech`\n  - `finance`\n  - `business`\n  - `us_news`\n  - `world_news`\n- 每個分類的 value 是一個陣列（array），陣列中的每一個元素代表一則新聞，包含：\n  - `title`\n  - `link`\n  - `snippet`\n  - `source`\n  - `field`\n- `total_items` 代表所有分類中新聞的總數。\n- 若 `total_items > 0`，代表至少存在一則新聞，不得回覆「無可用新聞」。\n\n---\n\n## 背景與偏好（讀者畫像）\n\n- 讀者是一名工程師，同時也有做股票／投資。\n- 投資關注：\n  - 虛擬貨幣（Crypto）\n  - 科技板塊（大型科技、半導體、雲端／資料中心、AI 產業鏈）\n  - 會影響風險資產的宏觀因素（利率、通膨、監管、重大政策）\n- 興趣與重要性順序（請嚴格遵守）：\n  1. 科技（Tech）\n  2. 財經（Finance）\n  3. 商業（Business）\n  4. 美國國內新聞（US News）\n  5. 世界新聞（World News）\n\n---\n\n## 任務（選題與排序）\n\n- 請遍歷 `sections` 中所有分類以取得新聞。\n- 請根據「對工程師 + 投資者的實際影響與重要性」選擇並排序新聞。\n- 可以忽略不重要或影響有限的新聞。\n- 排序時優先考量：\n  - 科技／資安事件（漏洞、資料外洩、AI、半導體、資料中心）\n  - 投資影響（利率、通膨、央行、Crypto、科技股估值或財報）\n  - 產業趨勢與資金流向\n  - 影響 AI、半導體、加密資產的政策或監管\n  - 重大地緣政治（僅在影響市場或供應鏈時納入）\n- 若多則新聞描述同一事件，只保留最具公信力或資訊量最大的一則。\n\n---\n\n## 輸出要求（HTML Email）\n\n- 全部板塊合計最多 **15 則新聞**\n- 產生以下結構：\n  1. Header（日期）\n  2. 今日重點摘要（3–5 點）\n  3. 分板塊內容（依順序：Tech → Finance → Business → US → World）\n  4. Footer 說明\n- 「來源」必須是可點擊連結，連到原文。",
+          "messages": {
+            "messageValues": [
+              {
+                "message": "你是一位專業的新聞編輯，負責為一位工程師兼投資者撰寫「每日早晨新聞匯報」Email。\n\n請嚴格遵守以下規則（不可違反）：\n\n## 資料使用\n- 僅能使用使用者提供的資料。\n- 不可加入任何未提供的事實、背景或推測。\n- 若資訊不足，請明確寫「無法提供詳情」。\n\n## 輸出格式（硬性規則）\n- 輸出必須是「完整的 HTML Email」。\n- 必須包含 <!doctype html>、<html>、<head>、<body>。\n- 僅輸出 HTML，不得輸出任何說明文字、Markdown 或註解。\n- 不得在 HTML 前後加任何非 HTML 內容。\n- 你必須輸出 Tech/Finance/Business/US/World 五個 section（若該 section 沒選到新聞，整段略過），每個 section 的新聞卡片請重複使用同一段 NEWS CARD。\n\n## 新聞呈現規則\n- 每則新聞必須包含：\n  - 標題（可點擊連結）\n  - 摘要（僅基於 snippet）\n  - 為何重要（1 句，工程師／投資者角度）\n  - 來源（可點擊，連到原文）\n- 若多則新聞描述同一事件，只保留資訊最完整、來源最具公信力的一則。\n\n## 中文化規則\n- Email 內容必須以中文呈現（繁體中文 zh-Hant）。\n- 每則新聞的「標題」必須翻譯成中文，但連結仍使用原始 link。\n- 每則新聞的「摘要」必須以中文撰寫，且僅能根據 snippet 翻譯/改寫，不得加入外部資訊。\n- 「為何重要」必須是中文。\n- 「來源」維持原來源名稱（例如 Reuters / TechCrunch），但必須是可點擊連到原文的連結。\n- 若遇到專有名詞（公司名、人名、產品名、地名），請保留英文原名。\n- 禁止輸出任何英文長句；允許少量專有名詞英文。\n\n## HTML 結構與相容性\n- 使用 table + inline CSS。\n- 不得使用外部 CSS、JavaScript、圖片或外部字體。\n- 輸出必須能在 Gmail、Outlook、Apple Mail 正常顯示。\n\n## HTML 骨架使用規則\n- 你必須使用使用者提供的 HTML 骨架（skeleton）作為固定結構。\n- 不得刪除、重排或簡化骨架中的 HTML 結構與 style。\n- 你只能：\n  - 填入實際內容\n  - 複製「新聞卡片區塊」以呈現多則新聞\n- 骨架中的 placeholder（例如 {{date}}、{{title}}、{{summary}}、{{why_it_matters}}、{{source}}、{{link}}）必須以實際內容取代，輸出中不得保留 {{ }}。\n\n## HTML 骨架（請使用此結構，填入內容）\n\n```html\n<!doctype html>\n<html lang=\"zh-Hant\">\n  <head>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <title>工程師每日新聞匯報</title>\n  </head>\n\n  <body style=\"margin:0;padding:0;background-color:#f3f5f9;\">\n    <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color:#f3f5f9;\">\n      <tr>\n        <td align=\"center\" style=\"padding:28px 12px;\">\n\n          <!-- Container -->\n          <table role=\"presentation\" width=\"680\" cellpadding=\"0\" cellspacing=\"0\"\n            style=\"width:680px;max-width:680px;background:#ffffff;border-radius:16px;border:1px solid #e4e7ef;\">\n\n            <!-- Header -->\n            <tr>\n              <td style=\"padding:26px 28px;background:#0f172a;\">\n                <div style=\"font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;color:#ffffff;\">\n                  <div style=\"font-size:20px;font-weight:800;letter-spacing:0.2px;\">\n                    早安 ☀️ 工程師 × 投資者每日新聞匯報\n                  </div>\n                  <div style=\"font-size:13px;opacity:0.8;margin-top:6px;\">\n                    {{ date }}\n                  </div>\n                </div>\n              </td>\n            </tr>\n\n            <!-- Top Takeaways -->\n            <tr>\n              <td style=\"padding:22px 28px 10px 28px;\">\n                <div style=\"font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;color:#020617;\">\n                  <div style=\"font-size:15px;font-weight:800;margin-bottom:8px;\">\n                    今日重點\n                  </div>\n                  <ul style=\"margin:0;padding-left:18px;font-size:14px;line-height:1.7;color:#111827;\">\n                    <li>{{takeaway_1}}</li>\n                    <li>{{takeaway_2}}</li>\n                    <li>{{takeaway_3}}</li>\n                  </ul>\n                </div>\n              </td>\n            </tr>\n\n            <!-- Divider -->\n            <tr>\n              <td style=\"padding:12px 28px;\">\n                <div style=\"height:1px;background:#e5e7eb;\"></div>\n              </td>\n            </tr>\n\n            <!-- SECTION HEADER -->\n            <tr>\n              <td style=\"padding:4px 28px 0 28px;\">\n                <div style=\"font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;\">\n                  <div style=\"font-size:16px;font-weight:800;color:#020617;border-left:4px solid #2563eb;padding-left:10px;\">\n                    🧠 科技\n                  </div>\n                  <div style=\"font-size:12px;color:#6b7280;margin-left:14px;margin-top:4px;\">\n                    AI · 資安 · 半導體 · 雲端 · 大型平台\n                  </div>\n                </div>\n              </td>\n            </tr>\n\n            <!-- NEWS CARD -->\n            <tr>\n              <td style=\"padding:12px 28px;\">\n                <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\"\n                  style=\"border:1px solid #e5e7eb;border-radius:14px;\">\n                  <tr>\n                    <td style=\"padding:16px;\">\n                      <div style=\"font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;\">\n                        <div style=\"font-size:15px;font-weight:800;line-height:1.4;margin-bottom:8px;\">\n                          <a href=\"{{link}}\" target=\"_blank\" rel=\"noopener noreferrer\"\n                             style=\"color:#1d4ed8;text-decoration:none;\">\n                            {{title}}\n                          </a>\n                        </div>\n\n                        <div style=\"font-size:14px;line-height:1.65;color:#111827;margin-bottom:10px;\">\n                          {{summary}}\n                        </div>\n\n                        <div style=\"font-size:14px;line-height:1.65;color:#111827;margin-bottom:10px;\">\n                          <strong>為何重要：</strong>{{why_it_matters}}\n                        </div>\n\n                        <div style=\"font-size:12px;color:#6b7280;\">\n                          來源：\n                          <a href=\"{{link}}\" target=\"_blank\" rel=\"noopener noreferrer\"\n                             style=\"color:#2563eb;text-decoration:none;\">\n                            {{source}}\n                          </a>\n                        </div>\n                      </div>\n                    </td>\n                  </tr>\n                </table>\n              </td>\n            </tr>\n            <!-- END CARD -->\n\n            <!-- Footer -->\n            <tr>\n              <td style=\"padding:22px 28px;background:#f8fafc;\">\n                <div style=\"font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;font-size:12px;line-height:1.6;color:#475569;\">\n                  <strong>說明</strong><br>\n                  本郵件由自動化工作流產生，摘要僅基於原始新聞 snippet，請點擊標題閱讀完整內容。\n                </div>\n              </td>\n            </tr>\n\n          </table>\n          <!-- /Container -->\n\n        </td>\n      </tr>\n    </table>\n  </body>\n</html>\n```\n\n"
+              }
+            ]
+          },
+          "batching": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.7,
+        "position": [
+          1616,
+          1136
+        ],
+        "id": "0edfe0f4-b7c4-4d4f-a08e-d0874155fa54",
+        "name": "Basic LLM Chain",
+        "retryOnFail": true,
+        "waitBetweenTries": 3000,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "sendTo": "arthur960304@gmail.com, ravenho2021@gmail.com, jinfengqingmai2025@gmail.com, ro5555chenn@gmail.com, dngg6688@gmail.com, sms13366689@gmail.com, dearanita1116@gmail.com",
+          "subject": "每日新聞匯報",
+          "message": "={{ $json.text }}",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.1,
+        "position": [
+          2016,
+          1056
+        ],
+        "id": "cd066b85-4f80-4b13-a604-3361a16404b8",
+        "name": "SendEmail",
+        "webhookId": "42f4f6bd-64dc-4ff4-a551-e10d59160246",
+        "credentials": {
+          "gmailOAuth2": {
+            "id": "JriILMdgCPgFYZHK",
+            "name": "Gmail account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+        "typeVersion": 1,
+        "position": [
+          1616,
+          1328
+        ],
+        "id": "7f99f05a-75cc-4ce2-933c-cd52c291bdc3",
+        "name": "Google Gemini Chat Model",
+        "credentials": {
+          "googlePalmApi": {
+            "id": "si4tLpXRSst5aHRt",
+            "name": "Google Gemini(PaLM) Api account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "817c718e-2177-428f-b3f6-ccd0a9f519d5",
+                "leftValue": "={{ $json.link }}",
+                "rightValue": "news.google.com",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          672,
+          912
+        ],
+        "id": "75b7e5db-8b51-44e0-bb6e-1111adc1d793",
+        "name": "If"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          1120,
+          1136
+        ],
+        "id": "e1f6630d-81ee-4fb3-a496-76e84ae8c7a8",
+        "name": "Merge"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "48012e23-86ed-4d37-b613-e76857796ab9",
+                "name": "link",
+                "value": "={{ $('Get10NewsForEachField').item.json.link }}",
+                "type": "string"
+              },
+              {
+                "id": "1a585190-d5f0-4363-a328-5921a31dd3d3",
+                "name": "title",
+                "value": "={{ $('Get10NewsForEachField').item.json.title }}",
+                "type": "string"
+              },
+              {
+                "id": "b7b0e785-d2a7-43a3-ba9b-bab1261ce0bc",
+                "name": "content_snippet",
+                "value": "={{ $('Get10NewsForEachField').item.json.content_snippet }}",
+                "type": "string"
+              },
+              {
+                "id": "689df4ae-725c-44cd-9006-aa4cce448ff0",
+                "name": "field",
+                "value": "={{ $('Get10NewsForEachField').item.json.field }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          896,
+          1232
+        ],
+        "id": "93c88018-f0b9-4162-8599-cbb9db903fdf",
+        "name": "SetValues1"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Input shape (your previous node):\n// items = [ { json: { data: [ {link,title,content_snippet,field}, ... ] } } ]\n// Output: single item with news_json only\n\nconst TIMEZONE = 'America/Chicago'; // Austin\nconst MAX_SNIPPET_CHARS = 320;\n\nconst fieldOrder = ['tech', 'business', 'finance', 'world_news', 'us_news'];\n\nfunction getSourceFromLink(raw) {\n  if (!raw) return 'unknown';\n\n  let url = String(raw).trim();\n  if (!/^https?:\\/\\//i.test(url)) url = 'https://' + url;\n\n  let host = '';\n  try {\n    host = new URL(url).hostname.replace(/^www\\./, '').toLowerCase();\n  } catch {\n    const m = url.match(/^(?:https?:\\/\\/)?(?:www\\.)?([^\\/\\s?#]+)/i);\n    host = (m && m[1]) ? m[1].toLowerCase() : '';\n  }\n\n  if (!host) return 'unknown';\n\n  const map = {\n    'techcrunch.com': 'TechCrunch',\n    'nasdaq.com': 'Nasdaq',\n    'apnews.com': 'AP News',\n    'reuters.com': 'Reuters',\n    'nytimes.com': 'The New York Times',\n    'wsj.com': 'The Wall Street Journal',\n    'bbc.com': 'BBC',\n    'npr.org': 'NPR',\n    'cnbc.com': 'CNBC',\n    'bloomberg.com': 'Bloomberg',\n    'theguardian.com': 'The Guardian',\n    'axios.com': 'Axios',\n    'ft.com': 'Financial Times',\n    'cnn.com': 'CNN',\n    'investopedia.com': 'Investopedia',\n    'fortune.com': 'Fortune',\n    'seekingalpha.com': 'Seeking Alpha',\n    'marketwatch.com': 'MarketWatch',\n    'yahoo.com': 'Yahoo Finance',\n    'thehill.com': 'The Hill',\n    'washingtonpost.com': 'The Washington Post',\n    'cbsnews.com': 'CBS News',\n    'abcnews.go.com': 'ABC News',\n    'nbcnews.com': 'NBC News',\n    'politico.com': 'Politico',\n  };\n\n  return map[host] || host;\n}\n\nfunction cleanSnippet(s) {\n  if (!s) return '';\n  let t = String(s).replace(/\\s+/g, ' ').trim();\n  if (t.length > MAX_SNIPPET_CHARS) t = t.slice(0, MAX_SNIPPET_CHARS - 1) + '…';\n  return t;\n}\n\n// 1) Get the list from items[0].json.data\nconst data = items?.[0]?.json?.data;\nif (!Array.isArray(data)) {\n  throw new Error('Expected items[0].json.data to be an array of news items.');\n}\n\n// 2) Normalize\nconst normalized = data.map((n) => ({\n  title: (n.title || '').trim(),\n  link: (n.link || '').trim(),\n  snippet: cleanSnippet(n.content_snippet),\n  field: n.field || 'unknown',\n  source: getSourceFromLink(n.link),\n}));\n\n// 3) Group by field (no limit)\nconst sections = {};\nfor (const f of fieldOrder) sections[f] = [];\n\nfor (const n of normalized) {\n  if (!sections[n.field]) sections[n.field] = [];\n  sections[n.field].push(n);\n}\n\n// 4) Build news_json\nconst now = new Date();\nconst news_json = {\n  date: now.toISOString().slice(0, 10),\n  timezone: TIMEZONE,\n  total_items: normalized.length,\n  sections,\n};\n\n// 5) Return single item for LLM\nreturn [{ json: news_json }];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1456,
+          1136
+        ],
+        "id": "4f8d15e6-b48a-4836-abff-6047164b29ab",
+        "name": "OrganizeData"
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 9
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          -320,
+          384
+        ],
+        "id": "8841fabf-1f73-4d72-a6b2-55226a08d1ab",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "sendTo": "arthur960304@gmail.com",
+          "subject": "每日新聞匯報失敗通知",
+          "message": "<!doctype html>\n\n<html lang=\"zh-Hant\">\n  <head>\n    <meta charset=\"utf-8\" />\n  </head>\n  <body style=\"margin:0;padding:0;background:#f6f7fb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;color:#111827;\">\n    <div style=\"max-width:520px;margin:40px auto;padding:24px;\">\n      <div style=\"background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;padding:24px;\">\n        <h2 style=\"margin:0 0 12px 0;font-size:18px;\">\n          ❌ 每日新聞匯報失敗\n        </h2>\n        <p style=\"margin:0;font-size:14px;line-height:1.6;color:#374151;\">\n          n8n 在執行 <strong>每日新聞匯報</strong> 時發生錯誤，  \n          Basic LLM Chain 未能成功完成流程，因此本次新聞未寄送。\n          \n          請登入 n8n 檢查工作流狀態。\n        </p>\n  </div>\n</div>\n\n  </body>\n</html>\n",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.2,
+        "position": [
+          2016,
+          1232
+        ],
+        "id": "64c5023c-77d8-4f98-93e6-7cbdbd21e084",
+        "name": "SendErrorMsg",
+        "webhookId": "f0efec53-d996-453c-befe-fe0cf22038ab",
+        "credentials": {
+          "gmailOAuth2": {
+            "id": "JriILMdgCPgFYZHK",
+            "name": "Gmail account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "GetPast24Hours": {
+        "main": [
+          [
+            {
+              "node": "FilterBaseOnTime",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "FilterBaseOnTime": {
+        "main": [
+          [
+            {
+              "node": "Get10NewsForEachField",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google News Finance": {
+        "main": [
+          [
+            {
+              "node": "SetFinanceField",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "TechCrunch": {
+        "main": [
+          [
+            {
+              "node": "SetTechField",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google News World": {
+        "main": [
+          [
+            {
+              "node": "SetWorldNewsField",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google News US": {
+        "main": [
+          [
+            {
+              "node": "SetUsNewsField",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google News Business": {
+        "main": [
+          [
+            {
+              "node": "SetBusinessField",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "MergeAllRSS": {
+        "main": [
+          [
+            {
+              "node": "RemoveDuplicates",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AggregateToList": {
+        "main": [
+          [
+            {
+              "node": "OrganizeData",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Decoded url": {
+        "main": [
+          [
+            {
+              "node": "SetValues",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Call decoding URL": {
+        "main": [
+          [
+            {
+              "node": "Decoded url",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepare decoding variables": {
+        "main": [
+          [
+            {
+              "node": "Call decoding URL",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get encoded news URL": {
+        "main": [
+          [
+            {
+              "node": "Extract decoding keys",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Map needed keys": {
+        "main": [
+          [
+            {
+              "node": "Prepare decoding variables",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract decoding keys": {
+        "main": [
+          [
+            {
+              "node": "Map needed keys",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "SetFinanceField": {
+        "main": [
+          [
+            {
+              "node": "MergeAllRSS",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "SetTechField": {
+        "main": [
+          [
+            {
+              "node": "MergeAllRSS",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "SetWorldNewsField": {
+        "main": [
+          [
+            {
+              "node": "MergeAllRSS",
+              "type": "main",
+              "index": 2
+            }
+          ]
+        ]
+      },
+      "SetBusinessField": {
+        "main": [
+          [
+            {
+              "node": "MergeAllRSS",
+              "type": "main",
+              "index": 3
+            }
+          ]
+        ]
+      },
+      "SetUsNewsField": {
+        "main": [
+          [
+            {
+              "node": "MergeAllRSS",
+              "type": "main",
+              "index": 4
+            }
+          ]
+        ]
+      },
+      "Get10NewsForEachField": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "SetValues": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "RemoveDuplicates": {
+        "main": [
+          [
+            {
+              "node": "GetPast24Hours",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Basic LLM Chain": {
+        "main": [
+          [
+            {
+              "node": "SendEmail",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "SendErrorMsg",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Gemini Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Get encoded news URL",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "SetValues1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "AggregateToList",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "SetValues1": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "OrganizeData": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Google News World",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Google News Finance",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "TechCrunch",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Google News Business",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Google News US",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Arthur Hsieh",
+    "name": "Version 0f6a0b2a",
+    "description": "remove n8n email append",
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-01-01T16:37:27.732Z",
+        "id": 6,
+        "workflowId": "7hJz5eQk12axtKwc",
+        "versionId": "0f6a0b2a-e370-41bf-9801-154699ad2d06",
+        "event": "activated",
+        "userId": "049de407-c1f1-4531-9508-8d3d2d1d1297"
+      }
+    ]
+  },
+  "activeVersionId": "0f6a0b2a-e370-41bf-9801-154699ad2d06",
+  "connections": {
+    "GetPast24Hours": {
+      "main": [
+        [
+          {
+            "node": "FilterBaseOnTime",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FilterBaseOnTime": {
+      "main": [
+        [
+          {
+            "node": "Get10NewsForEachField",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google News Finance": {
+      "main": [
+        [
+          {
+            "node": "SetFinanceField",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TechCrunch": {
+      "main": [
+        [
+          {
+            "node": "SetTechField",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google News World": {
+      "main": [
+        [
+          {
+            "node": "SetWorldNewsField",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google News US": {
+      "main": [
+        [
+          {
+            "node": "SetUsNewsField",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google News Business": {
+      "main": [
+        [
+          {
+            "node": "SetBusinessField",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MergeAllRSS": {
+      "main": [
+        [
+          {
+            "node": "RemoveDuplicates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AggregateToList": {
+      "main": [
+        [
+          {
+            "node": "OrganizeData",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decoded url": {
+      "main": [
+        [
+          {
+            "node": "SetValues",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call decoding URL": {
+      "main": [
+        [
+          {
+            "node": "Decoded url",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare decoding variables": {
+      "main": [
+        [
+          {
+            "node": "Call decoding URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get encoded news URL": {
+      "main": [
+        [
+          {
+            "node": "Extract decoding keys",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map needed keys": {
+      "main": [
+        [
+          {
+            "node": "Prepare decoding variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract decoding keys": {
+      "main": [
+        [
+          {
+            "node": "Map needed keys",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SetFinanceField": {
+      "main": [
+        [
+          {
+            "node": "MergeAllRSS",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "SetTechField": {
+      "main": [
+        [
+          {
+            "node": "MergeAllRSS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SetWorldNewsField": {
+      "main": [
+        [
+          {
+            "node": "MergeAllRSS",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "SetBusinessField": {
+      "main": [
+        [
+          {
+            "node": "MergeAllRSS",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "SetUsNewsField": {
+      "main": [
+        [
+          {
+            "node": "MergeAllRSS",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Get10NewsForEachField": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SetValues": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RemoveDuplicates": {
+      "main": [
+        [
+          {
+            "node": "GetPast24Hours",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "SendEmail",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SendErrorMsg",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get encoded news URL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SetValues1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "AggregateToList",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SetValues1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OrganizeData": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google News World",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google News Finance",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "TechCrunch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google News Business",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google News US",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-12-17T21:16:44.965Z",
+  "description": null,
+  "id": "7hJz5eQk12axtKwc",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "MorningNews",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "subtractFromDate",
+        "magnitude": "={{ $now }}",
+        "timeUnit": "hours",
+        "duration": 24,
+        "outputFieldName": "Past24Hours",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        896,
+        384
+      ],
+      "id": "773a18c2-0f78-4671-9b24-7818520c2b22",
+      "name": "GetPast24Hours"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "db1058b7-e03e-4e73-970b-687a1325c756",
+              "leftValue": "={{ $('RemoveDuplicates').item.json.isoDate.toDateTime().toLocal() }}",
+              "rightValue": "={{ $json.Past24Hours }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "after"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1120,
+        384
+      ],
+      "id": "51cbc469-44a5-4075-ad0c-4dfb6eaeee80",
+      "name": "FilterBaseOnTime"
+    },
+    {
+      "parameters": {
+        "url": "https://news.google.com/rss/topics/CAAqIQgKIhtDQkFTRGdvSUwyMHZNREpmTjNRU0FtVnVLQUFQAQ?hl=en-US&gl=US&ceid=US%3Aen",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        192
+      ],
+      "id": "22dfceb1-8614-48de-9916-7b424daf726a",
+      "name": "Google News Finance"
+    },
+    {
+      "parameters": {
+        "url": "https://techcrunch.com/feed/",
+        "options": {}
+      },
+      "id": "401f58bd-6aad-4f45-9dc2-7dd0f62524a3",
+      "name": "TechCrunch",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "url": "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        384
+      ],
+      "id": "410dae7f-3b29-4d70-9771-9f7934b05748",
+      "name": "Google News World"
+    },
+    {
+      "parameters": {
+        "url": "https://news.google.com/rss/topics/CAAqIggKIhxDQkFTRHdvSkwyMHZNRGxqTjNjd0VnSmxiaWdBUAE?hl=en-US&gl=US&ceid=US%3Aen",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        768
+      ],
+      "id": "fb429791-698a-4f97-b259-f1b8e8c5a213",
+      "name": "Google News US"
+    },
+    {
+      "parameters": {
+        "url": "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx6TVdZU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        576
+      ],
+      "id": "16f85777-ff07-4cc2-b1b6-4538d8b7c54c",
+      "name": "Google News Business"
+    },
+    {
+      "parameters": {
+        "numberInputs": 5
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        448,
+        336
+      ],
+      "id": "4b8a34c3-f72a-4b24-920a-964a83558e11",
+      "name": "MergeAllRSS"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        1136
+      ],
+      "id": "5c7e692a-bd32-44ad-9dc5-a67f7c152d7f",
+      "name": "AggregateToList"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c51f320e-4fb8-4bd4-8e36-9330e251936e",
+              "name": "url",
+              "type": "string",
+              "value": "={{ JSON.parse(JSON.parse($json.data.split('\\n\\n')[1])[0][2])[1] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e5ecb852-583c-485b-b088-b324169c2055",
+      "name": "Decoded url",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        2016,
+        816
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://news.google.com/_/DotsSplashUi/data/batchexecute",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded;charset=UTF-8"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "Referer",
+              "value": "https://www.google.com/"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "f.req",
+              "value": "={{ $json.f_req }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "d2f9416a-d91f-42c6-a6f8-522cfd66b3df",
+      "name": "Call decoding URL",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1792,
+        816
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => {\n    const gn_art_id = item.json.base64Str;\n    const timestamp = item.json.timestamp;\n    const signature = item.json.signature;\n\n    const articlesReq = [\n        'Fbv4je',\n        `[\"garturlreq\",[[\"X\",\"X\",[\"X\",\"X\"],null,null,1,1,\"US:en\",null,1,null,null,null,null,null,0,1],\"X\",\"X\",1,[1,1,1],1,1,null,0,0,null,0],\"${gn_art_id}\",${timestamp},\"${signature}\"]`,\n    ];\n\n    return {\n        json: {\n            f_req: JSON.stringify([[articlesReq]])  // Questo verrà usato nel nodo HTTP Request\n        }\n    };\n});"
+      },
+      "id": "3898a5a8-f212-49e4-bdb8-989e4d44f965",
+      "name": "Prepare decoding variables",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1568,
+        816
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.link }}",
+        "options": {}
+      },
+      "id": "057f69fd-347d-4944-89a2-2c27a875112d",
+      "name": "Get encoded news URL",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        896,
+        816
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Get encoded content\n\nHere we retrieve HTML content",
+        "height": 400,
+        "width": 220,
+        "color": 3
+      },
+      "id": "ffeebdd8-0600-4d99-b320-3824a71a9073",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        848,
+        576
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b5a11795-2bd1-412f-a215-f7402bece002",
+              "name": "signature",
+              "type": "string",
+              "value": "={{ $json.signature }}"
+            },
+            {
+              "id": "33267283-3ac8-4d65-9a01-c7f154a7d061",
+              "name": "timestamp",
+              "type": "string",
+              "value": "={{ $json.timestamp }}"
+            },
+            {
+              "id": "bff8f19a-30d6-4307-87da-9b98b26cee8b",
+              "name": "base64Str",
+              "type": "string",
+              "value": "={{ $('Get10NewsForEachField').item.json.guid }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7f2b8dc6-5176-4afe-9305-72014112ac12",
+      "name": "Map needed keys",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1344,
+        816
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "signature",
+              "cssSelector": "div",
+              "returnValue": "attribute",
+              "attribute": "data-n-a-sg"
+            },
+            {
+              "key": "timestamp",
+              "cssSelector": "div",
+              "returnValue": "attribute",
+              "attribute": "data-n-a-ts"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "20b1fe2c-8c99-4f15-b98c-adfb103f2be8",
+      "name": "Extract decoding keys",
+      "type": "n8n-nodes-base.html",
+      "position": [
+        1120,
+        816
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "content": "## Decoding Keys\n\nThe HTML content extracted contains the necessary variables for decoding:\n\n+ signature\n+ timestamp\n+ base64string (already in the URL)",
+        "height": 400,
+        "width": 220
+      },
+      "id": "abdb56b3-2e16-4ff3-9472-91723ab22c69",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1072,
+        576
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Clean output\n\nMapping variables for easy utilization",
+        "height": 400,
+        "width": 220
+      },
+      "id": "ea4676d5-94e2-46c8-822f-901fb5bd3c1a",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1296,
+        576
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Preparing Request\n\nDecoding the request requires specific body content. Here, we build it using the decoding keys.",
+        "height": 400,
+        "width": 220,
+        "color": 3
+      },
+      "id": "0e2d5c96-46a5-4ef3-9b9e-3cbbed6a3ac1",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1520,
+        576
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## This is decoding step\n\nSending a request to a specific Google decoding URL",
+        "height": 400,
+        "width": 220,
+        "color": 3
+      },
+      "id": "73931ae2-e922-4595-ae47-4117ccb3719d",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1744,
+        576
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Cleaning URL\n\nGoogle adds some unwanted and random characters at the beginning of the URL",
+        "height": 400,
+        "width": 220
+      },
+      "id": "d4e1c177-e172-461e-a729-65f18dfea291",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1968,
+        576
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "48012e23-86ed-4d37-b613-e76857796ab9",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "1a585190-d5f0-4363-a328-5921a31dd3d3",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "b7b0e785-d2a7-43a3-ba9b-bab1261ce0bc",
+              "name": "content_snippet",
+              "value": "={{ $json.contentSnippet }}",
+              "type": "string"
+            },
+            {
+              "id": "9cc9bbfd-35f6-463b-b73f-4b424742e20f",
+              "name": "isoDate",
+              "value": "={{ $json.isoDate }}",
+              "type": "string"
+            },
+            {
+              "id": "e3effc7a-9ec8-4762-abe1-388ac777f9d5",
+              "name": "field",
+              "value": "finance",
+              "type": "string"
+            },
+            {
+              "id": "f791ca34-4d1f-4841-8cc9-239e210d73dd",
+              "name": "guid",
+              "value": "={{ $json.guid }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        192
+      ],
+      "id": "2707a39e-58a3-40c9-91aa-e4e27235daed",
+      "name": "SetFinanceField"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "48012e23-86ed-4d37-b613-e76857796ab9",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "1a585190-d5f0-4363-a328-5921a31dd3d3",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "b7b0e785-d2a7-43a3-ba9b-bab1261ce0bc",
+              "name": "content_snippet",
+              "value": "={{ $json.contentSnippet }}",
+              "type": "string"
+            },
+            {
+              "id": "a0252fe9-02a1-41f8-934e-1b8106fe23a5",
+              "name": "isoDate",
+              "value": "={{ $json.isoDate }}",
+              "type": "string"
+            },
+            {
+              "id": "689df4ae-725c-44cd-9006-aa4cce448ff0",
+              "name": "field",
+              "value": "tech",
+              "type": "string"
+            },
+            {
+              "id": "fffe80c4-4058-4a44-a342-95fafe5bf250",
+              "name": "guid",
+              "value": "={{ $json.guid }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        0
+      ],
+      "id": "33315b0f-b544-4cc7-920e-8e7521ebfada",
+      "name": "SetTechField"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "48012e23-86ed-4d37-b613-e76857796ab9",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "1a585190-d5f0-4363-a328-5921a31dd3d3",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "b7b0e785-d2a7-43a3-ba9b-bab1261ce0bc",
+              "name": "content_snippet",
+              "value": "={{ $json.contentSnippet }}",
+              "type": "string"
+            },
+            {
+              "id": "ab9fa209-e9b6-4bfd-9bd8-6cc253336b43",
+              "name": "isoDate",
+              "value": "={{ $json.isoDate }}",
+              "type": "string"
+            },
+            {
+              "id": "c430678c-f9fe-4ebc-bde1-0a6eb6b2c8d1",
+              "name": "field",
+              "value": "world_news",
+              "type": "string"
+            },
+            {
+              "id": "168a437d-2fa1-4f6a-9e9a-64214827c7c6",
+              "name": "guid",
+              "value": "={{ $json.guid }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        384
+      ],
+      "id": "1a2a3d24-6a1c-48ca-8d36-0ed07d9b20d7",
+      "name": "SetWorldNewsField"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "48012e23-86ed-4d37-b613-e76857796ab9",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "1a585190-d5f0-4363-a328-5921a31dd3d3",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "b7b0e785-d2a7-43a3-ba9b-bab1261ce0bc",
+              "name": "content_snippet",
+              "value": "={{ $json.contentSnippet }}",
+              "type": "string"
+            },
+            {
+              "id": "1f640f8f-6b79-45ca-8b72-0dcda2c5cd50",
+              "name": "isoDate",
+              "value": "={{ $json.isoDate }}",
+              "type": "string"
+            },
+            {
+              "id": "bcca7f71-26bd-4b52-9608-97c3ef033c19",
+              "name": "field",
+              "value": "business",
+              "type": "string"
+            },
+            {
+              "id": "579d8a9e-71a6-4476-ae1b-33c92d8e6608",
+              "name": "guid",
+              "value": "={{ $json.guid }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        576
+      ],
+      "id": "27f29928-52ff-486f-bfcf-173411aaa305",
+      "name": "SetBusinessField"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "48012e23-86ed-4d37-b613-e76857796ab9",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "1a585190-d5f0-4363-a328-5921a31dd3d3",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "b7b0e785-d2a7-43a3-ba9b-bab1261ce0bc",
+              "name": "content_snippet",
+              "value": "={{ $json.contentSnippet }}",
+              "type": "string"
+            },
+            {
+              "id": "be4de5fb-3970-48e0-9fb8-d221a0a7ded0",
+              "name": "isoDate",
+              "value": "={{ $json.isoDate }}",
+              "type": "string"
+            },
+            {
+              "id": "0558f7fe-4827-4c62-a084-eee996602ff7",
+              "name": "field",
+              "value": "us_news",
+              "type": "string"
+            },
+            {
+              "id": "a028096a-d8e8-47b7-b7a2-c552a132f493",
+              "name": "guid",
+              "value": "={{ $json.guid }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        768
+      ],
+      "id": "21656a4c-2a5c-41c9-801c-1cdedbb93fcd",
+      "name": "SetUsNewsField"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 取幾筆資料\nconst num = 10;\n\n// 取得所有輸入的 items\nconst items = $(\"MergeAllRSS\").all()\n\n// 要分組的 field 類別\nconst groups = {};\n\n// 分組 (按照 field)\nfor (const item of items) {\n  const field = item.json.field;\n\n  if (!groups[field]) {\n    groups[field] = [];\n  }\n  groups[field].push(item);\n}\n\n// 為每個 field 取最多 10 筆\nlet result = [];\nfor (const field in groups) {\n  const tenItems = groups[field].slice(0, num);\n  result.push(...tenItems);\n}\n\nreturn result;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        384
+      ],
+      "id": "bcf47698-1993-4d8a-a107-f33ceb6dc2ea",
+      "name": "Get10NewsForEachField"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "48012e23-86ed-4d37-b613-e76857796ab9",
+              "name": "link",
+              "value": "={{ $json.url }}",
+              "type": "string"
+            },
+            {
+              "id": "1a585190-d5f0-4363-a328-5921a31dd3d3",
+              "name": "title",
+              "value": "={{ $('Get10NewsForEachField').item.json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "b7b0e785-d2a7-43a3-ba9b-bab1261ce0bc",
+              "name": "content_snippet",
+              "value": "={{ $('Get10NewsForEachField').item.json.content_snippet }}",
+              "type": "string"
+            },
+            {
+              "id": "689df4ae-725c-44cd-9006-aa4cce448ff0",
+              "name": "field",
+              "value": "={{ $('Get10NewsForEachField').item.json.field }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        1040
+      ],
+      "id": "0170190c-0a93-4c4b-a6f7-4aeeb654b319",
+      "name": "SetValues"
+    },
+    {
+      "parameters": {
+        "compare": "selectedFields",
+        "fieldsToCompare": "link",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        672,
+        384
+      ],
+      "id": "202ea358-5e75-4b85-8152-a0388fc429ea",
+      "name": "RemoveDuplicates"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=以下是今天的新聞資料，請將其視為唯一且完整的資料來源。\n\n## 新聞資料\n{{ JSON.stringify($json, null, 2) }}\n\n---\n\n## 資料結構說明（請務必遵守）\n\n- 所有新聞內容位於 `sections` 欄位中。\n- `sections` 是一個物件（object），key 為新聞分類：\n  - `tech`\n  - `finance`\n  - `business`\n  - `us_news`\n  - `world_news`\n- 每個分類的 value 是一個陣列（array），陣列中的每一個元素代表一則新聞，包含：\n  - `title`\n  - `link`\n  - `snippet`\n  - `source`\n  - `field`\n- `total_items` 代表所有分類中新聞的總數。\n- 若 `total_items > 0`，代表至少存在一則新聞，不得回覆「無可用新聞」。\n\n---\n\n## 背景與偏好（讀者畫像）\n\n- 讀者是一名工程師，同時也有做股票／投資。\n- 投資關注：\n  - 虛擬貨幣（Crypto）\n  - 科技板塊（大型科技、半導體、雲端／資料中心、AI 產業鏈）\n  - 會影響風險資產的宏觀因素（利率、通膨、監管、重大政策）\n- 興趣與重要性順序（請嚴格遵守）：\n  1. 科技（Tech）\n  2. 財經（Finance）\n  3. 商業（Business）\n  4. 美國國內新聞（US News）\n  5. 世界新聞（World News）\n\n---\n\n## 任務（選題與排序）\n\n- 請遍歷 `sections` 中所有分類以取得新聞。\n- 請根據「對工程師 + 投資者的實際影響與重要性」選擇並排序新聞。\n- 可以忽略不重要或影響有限的新聞。\n- 排序時優先考量：\n  - 科技／資安事件（漏洞、資料外洩、AI、半導體、資料中心）\n  - 投資影響（利率、通膨、央行、Crypto、科技股估值或財報）\n  - 產業趨勢與資金流向\n  - 影響 AI、半導體、加密資產的政策或監管\n  - 重大地緣政治（僅在影響市場或供應鏈時納入）\n- 若多則新聞描述同一事件，只保留最具公信力或資訊量最大的一則。\n\n---\n\n## 輸出要求（HTML Email）\n\n- 全部板塊合計最多 **15 則新聞**\n- 產生以下結構：\n  1. Header（日期）\n  2. 今日重點摘要（3–5 點）\n  3. 分板塊內容（依順序：Tech → Finance → Business → US → World）\n  4. Footer 說明\n- 「來源」必須是可點擊連結，連到原文。",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "你是一位專業的新聞編輯，負責為一位工程師兼投資者撰寫「每日早晨新聞匯報」Email。\n\n請嚴格遵守以下規則（不可違反）：\n\n## 資料使用\n- 僅能使用使用者提供的資料。\n- 不可加入任何未提供的事實、背景或推測。\n- 若資訊不足，請明確寫「無法提供詳情」。\n\n## 輸出格式（硬性規則）\n- 輸出必須是「完整的 HTML Email」。\n- 必須包含 <!doctype html>、<html>、<head>、<body>。\n- 僅輸出 HTML，不得輸出任何說明文字、Markdown 或註解。\n- 不得在 HTML 前後加任何非 HTML 內容。\n- 你必須輸出 Tech/Finance/Business/US/World 五個 section（若該 section 沒選到新聞，整段略過），每個 section 的新聞卡片請重複使用同一段 NEWS CARD。\n\n## 新聞呈現規則\n- 每則新聞必須包含：\n  - 標題（可點擊連結）\n  - 摘要（僅基於 snippet）\n  - 為何重要（1 句，工程師／投資者角度）\n  - 來源（可點擊，連到原文）\n- 若多則新聞描述同一事件，只保留資訊最完整、來源最具公信力的一則。\n\n## 中文化規則\n- Email 內容必須以中文呈現（繁體中文 zh-Hant）。\n- 每則新聞的「標題」必須翻譯成中文，但連結仍使用原始 link。\n- 每則新聞的「摘要」必須以中文撰寫，且僅能根據 snippet 翻譯/改寫，不得加入外部資訊。\n- 「為何重要」必須是中文。\n- 「來源」維持原來源名稱（例如 Reuters / TechCrunch），但必須是可點擊連到原文的連結。\n- 若遇到專有名詞（公司名、人名、產品名、地名），請保留英文原名。\n- 禁止輸出任何英文長句；允許少量專有名詞英文。\n\n## HTML 結構與相容性\n- 使用 table + inline CSS。\n- 不得使用外部 CSS、JavaScript、圖片或外部字體。\n- 輸出必須能在 Gmail、Outlook、Apple Mail 正常顯示。\n\n## HTML 骨架使用規則\n- 你必須使用使用者提供的 HTML 骨架（skeleton）作為固定結構。\n- 不得刪除、重排或簡化骨架中的 HTML 結構與 style。\n- 你只能：\n  - 填入實際內容\n  - 複製「新聞卡片區塊」以呈現多則新聞\n- 骨架中的 placeholder（例如 {{date}}、{{title}}、{{summary}}、{{why_it_matters}}、{{source}}、{{link}}）必須以實際內容取代，輸出中不得保留 {{ }}。\n\n## HTML 骨架（請使用此結構，填入內容）\n\n```html\n<!doctype html>\n<html lang=\"zh-Hant\">\n  <head>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <title>工程師每日新聞匯報</title>\n  </head>\n\n  <body style=\"margin:0;padding:0;background-color:#f3f5f9;\">\n    <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color:#f3f5f9;\">\n      <tr>\n        <td align=\"center\" style=\"padding:28px 12px;\">\n\n          <!-- Container -->\n          <table role=\"presentation\" width=\"680\" cellpadding=\"0\" cellspacing=\"0\"\n            style=\"width:680px;max-width:680px;background:#ffffff;border-radius:16px;border:1px solid #e4e7ef;\">\n\n            <!-- Header -->\n            <tr>\n              <td style=\"padding:26px 28px;background:#0f172a;\">\n                <div style=\"font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;color:#ffffff;\">\n                  <div style=\"font-size:20px;font-weight:800;letter-spacing:0.2px;\">\n                    早安 ☀️ 工程師 × 投資者每日新聞匯報\n                  </div>\n                  <div style=\"font-size:13px;opacity:0.8;margin-top:6px;\">\n                    {{ date }}\n                  </div>\n                </div>\n              </td>\n            </tr>\n\n            <!-- Top Takeaways -->\n            <tr>\n              <td style=\"padding:22px 28px 10px 28px;\">\n                <div style=\"font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;color:#020617;\">\n                  <div style=\"font-size:15px;font-weight:800;margin-bottom:8px;\">\n                    今日重點\n                  </div>\n                  <ul style=\"margin:0;padding-left:18px;font-size:14px;line-height:1.7;color:#111827;\">\n                    <li>{{takeaway_1}}</li>\n                    <li>{{takeaway_2}}</li>\n                    <li>{{takeaway_3}}</li>\n                  </ul>\n                </div>\n              </td>\n            </tr>\n\n            <!-- Divider -->\n            <tr>\n              <td style=\"padding:12px 28px;\">\n                <div style=\"height:1px;background:#e5e7eb;\"></div>\n              </td>\n            </tr>\n\n            <!-- SECTION HEADER -->\n            <tr>\n              <td style=\"padding:4px 28px 0 28px;\">\n                <div style=\"font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;\">\n                  <div style=\"font-size:16px;font-weight:800;color:#020617;border-left:4px solid #2563eb;padding-left:10px;\">\n                    🧠 科技\n                  </div>\n                  <div style=\"font-size:12px;color:#6b7280;margin-left:14px;margin-top:4px;\">\n                    AI · 資安 · 半導體 · 雲端 · 大型平台\n                  </div>\n                </div>\n              </td>\n            </tr>\n\n            <!-- NEWS CARD -->\n            <tr>\n              <td style=\"padding:12px 28px;\">\n                <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\"\n                  style=\"border:1px solid #e5e7eb;border-radius:14px;\">\n                  <tr>\n                    <td style=\"padding:16px;\">\n                      <div style=\"font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;\">\n                        <div style=\"font-size:15px;font-weight:800;line-height:1.4;margin-bottom:8px;\">\n                          <a href=\"{{link}}\" target=\"_blank\" rel=\"noopener noreferrer\"\n                             style=\"color:#1d4ed8;text-decoration:none;\">\n                            {{title}}\n                          </a>\n                        </div>\n\n                        <div style=\"font-size:14px;line-height:1.65;color:#111827;margin-bottom:10px;\">\n                          {{summary}}\n                        </div>\n\n                        <div style=\"font-size:14px;line-height:1.65;color:#111827;margin-bottom:10px;\">\n                          <strong>為何重要：</strong>{{why_it_matters}}\n                        </div>\n\n                        <div style=\"font-size:12px;color:#6b7280;\">\n                          來源：\n                          <a href=\"{{link}}\" target=\"_blank\" rel=\"noopener noreferrer\"\n                             style=\"color:#2563eb;text-decoration:none;\">\n                            {{source}}\n                          </a>\n                        </div>\n                      </div>\n                    </td>\n                  </tr>\n                </table>\n              </td>\n            </tr>\n            <!-- END CARD -->\n\n            <!-- Footer -->\n            <tr>\n              <td style=\"padding:22px 28px;background:#f8fafc;\">\n                <div style=\"font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;font-size:12px;line-height:1.6;color:#475569;\">\n                  <strong>說明</strong><br>\n                  本郵件由自動化工作流產生，摘要僅基於原始新聞 snippet，請點擊標題閱讀完整內容。\n                </div>\n              </td>\n            </tr>\n\n          </table>\n          <!-- /Container -->\n\n        </td>\n      </tr>\n    </table>\n  </body>\n</html>\n```\n\n"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1616,
+        1136
+      ],
+      "id": "0edfe0f4-b7c4-4d4f-a08e-d0874155fa54",
+      "name": "Basic LLM Chain",
+      "retryOnFail": true,
+      "waitBetweenTries": 3000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "sendTo": "arthur960304@gmail.com, ravenho2021@gmail.com, jinfengqingmai2025@gmail.com, ro5555chenn@gmail.com, dngg6688@gmail.com, sms13366689@gmail.com, dearanita1116@gmail.com",
+        "subject": "每日新聞匯報",
+        "message": "={{ $json.text }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2016,
+        1056
+      ],
+      "id": "cd066b85-4f80-4b13-a604-3361a16404b8",
+      "name": "SendEmail",
+      "webhookId": "42f4f6bd-64dc-4ff4-a551-e10d59160246",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "JriILMdgCPgFYZHK",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1616,
+        1328
+      ],
+      "id": "7f99f05a-75cc-4ce2-933c-cd52c291bdc3",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "si4tLpXRSst5aHRt",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "817c718e-2177-428f-b3f6-ccd0a9f519d5",
+              "leftValue": "={{ $json.link }}",
+              "rightValue": "news.google.com",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        912
+      ],
+      "id": "75b7e5db-8b51-44e0-bb6e-1111adc1d793",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1120,
+        1136
+      ],
+      "id": "e1f6630d-81ee-4fb3-a496-76e84ae8c7a8",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "48012e23-86ed-4d37-b613-e76857796ab9",
+              "name": "link",
+              "value": "={{ $('Get10NewsForEachField').item.json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "1a585190-d5f0-4363-a328-5921a31dd3d3",
+              "name": "title",
+              "value": "={{ $('Get10NewsForEachField').item.json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "b7b0e785-d2a7-43a3-ba9b-bab1261ce0bc",
+              "name": "content_snippet",
+              "value": "={{ $('Get10NewsForEachField').item.json.content_snippet }}",
+              "type": "string"
+            },
+            {
+              "id": "689df4ae-725c-44cd-9006-aa4cce448ff0",
+              "name": "field",
+              "value": "={{ $('Get10NewsForEachField').item.json.field }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        1232
+      ],
+      "id": "93c88018-f0b9-4162-8599-cbb9db903fdf",
+      "name": "SetValues1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Input shape (your previous node):\n// items = [ { json: { data: [ {link,title,content_snippet,field}, ... ] } } ]\n// Output: single item with news_json only\n\nconst TIMEZONE = 'America/Chicago'; // Austin\nconst MAX_SNIPPET_CHARS = 320;\n\nconst fieldOrder = ['tech', 'business', 'finance', 'world_news', 'us_news'];\n\nfunction getSourceFromLink(raw) {\n  if (!raw) return 'unknown';\n\n  let url = String(raw).trim();\n  if (!/^https?:\\/\\//i.test(url)) url = 'https://' + url;\n\n  let host = '';\n  try {\n    host = new URL(url).hostname.replace(/^www\\./, '').toLowerCase();\n  } catch {\n    const m = url.match(/^(?:https?:\\/\\/)?(?:www\\.)?([^\\/\\s?#]+)/i);\n    host = (m && m[1]) ? m[1].toLowerCase() : '';\n  }\n\n  if (!host) return 'unknown';\n\n  const map = {\n    'techcrunch.com': 'TechCrunch',\n    'nasdaq.com': 'Nasdaq',\n    'apnews.com': 'AP News',\n    'reuters.com': 'Reuters',\n    'nytimes.com': 'The New York Times',\n    'wsj.com': 'The Wall Street Journal',\n    'bbc.com': 'BBC',\n    'npr.org': 'NPR',\n    'cnbc.com': 'CNBC',\n    'bloomberg.com': 'Bloomberg',\n    'theguardian.com': 'The Guardian',\n    'axios.com': 'Axios',\n    'ft.com': 'Financial Times',\n    'cnn.com': 'CNN',\n    'investopedia.com': 'Investopedia',\n    'fortune.com': 'Fortune',\n    'seekingalpha.com': 'Seeking Alpha',\n    'marketwatch.com': 'MarketWatch',\n    'yahoo.com': 'Yahoo Finance',\n    'thehill.com': 'The Hill',\n    'washingtonpost.com': 'The Washington Post',\n    'cbsnews.com': 'CBS News',\n    'abcnews.go.com': 'ABC News',\n    'nbcnews.com': 'NBC News',\n    'politico.com': 'Politico',\n  };\n\n  return map[host] || host;\n}\n\nfunction cleanSnippet(s) {\n  if (!s) return '';\n  let t = String(s).replace(/\\s+/g, ' ').trim();\n  if (t.length > MAX_SNIPPET_CHARS) t = t.slice(0, MAX_SNIPPET_CHARS - 1) + '…';\n  return t;\n}\n\n// 1) Get the list from items[0].json.data\nconst data = items?.[0]?.json?.data;\nif (!Array.isArray(data)) {\n  throw new Error('Expected items[0].json.data to be an array of news items.');\n}\n\n// 2) Normalize\nconst normalized = data.map((n) => ({\n  title: (n.title || '').trim(),\n  link: (n.link || '').trim(),\n  snippet: cleanSnippet(n.content_snippet),\n  field: n.field || 'unknown',\n  source: getSourceFromLink(n.link),\n}));\n\n// 3) Group by field (no limit)\nconst sections = {};\nfor (const f of fieldOrder) sections[f] = [];\n\nfor (const n of normalized) {\n  if (!sections[n.field]) sections[n.field] = [];\n  sections[n.field].push(n);\n}\n\n// 4) Build news_json\nconst now = new Date();\nconst news_json = {\n  date: now.toISOString().slice(0, 10),\n  timezone: TIMEZONE,\n  total_items: normalized.length,\n  sections,\n};\n\n// 5) Return single item for LLM\nreturn [{ json: news_json }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        1136
+      ],
+      "id": "4f8d15e6-b48a-4836-abff-6047164b29ab",
+      "name": "OrganizeData"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -320,
+        384
+      ],
+      "id": "8841fabf-1f73-4d72-a6b2-55226a08d1ab",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "sendTo": "arthur960304@gmail.com",
+        "subject": "每日新聞匯報失敗通知",
+        "message": "<!doctype html>\n\n<html lang=\"zh-Hant\">\n  <head>\n    <meta charset=\"utf-8\" />\n  </head>\n  <body style=\"margin:0;padding:0;background:#f6f7fb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;color:#111827;\">\n    <div style=\"max-width:520px;margin:40px auto;padding:24px;\">\n      <div style=\"background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;padding:24px;\">\n        <h2 style=\"margin:0 0 12px 0;font-size:18px;\">\n          ❌ 每日新聞匯報失敗\n        </h2>\n        <p style=\"margin:0;font-size:14px;line-height:1.6;color:#374151;\">\n          n8n 在執行 <strong>每日新聞匯報</strong> 時發生錯誤，  \n          Basic LLM Chain 未能成功完成流程，因此本次新聞未寄送。\n          \n          請登入 n8n 檢查工作流狀態。\n        </p>\n  </div>\n</div>\n\n  </body>\n</html>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2016,
+        1232
+      ],
+      "id": "64c5023c-77d8-4f98-93e6-7cbdbd21e084",
+      "name": "SendErrorMsg",
+      "webhookId": "f0efec53-d996-453c-befe-fe0cf22038ab",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "JriILMdgCPgFYZHK",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "updatedAt": "2025-12-17T21:16:44.965Z",
+      "createdAt": "2025-12-17T21:16:44.965Z",
+      "role": "workflow:owner",
+      "workflowId": "7hJz5eQk12axtKwc",
+      "projectId": "bK0jph6zkEPxu4nf",
+      "project": {
+        "updatedAt": "2025-12-17T20:49:45.388Z",
+        "createdAt": "2025-12-17T20:44:46.306Z",
+        "id": "bK0jph6zkEPxu4nf",
+        "name": "Arthur Hsieh <arthur960304@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "049de407-c1f1-4531-9508-8d3d2d1d1297",
+        "projectRelations": [
+          {
+            "updatedAt": "2025-12-17T20:44:46.306Z",
+            "createdAt": "2025-12-17T20:44:46.306Z",
+            "userId": "049de407-c1f1-4531-9508-8d3d2d1d1297",
+            "projectId": "bK0jph6zkEPxu4nf",
+            "user": {
+              "updatedAt": "2026-01-01T17:50:45.128Z",
+              "createdAt": "2025-12-17T20:44:15.006Z",
+              "id": "049de407-c1f1-4531-9508-8d3d2d1d1297",
+              "email": "arthur960304@gmail.com",
+              "firstName": "Arthur",
+              "lastName": "Hsieh",
+              "personalizationAnswers": {
+                "version": "v4",
+                "personalization_survey_submitted_at": "2025-12-17T20:50:00.520Z",
+                "personalization_survey_n8n_version": "2.0.2",
+                "companyType": "personal",
+                "reportedSource": "google"
+              },
+              "settings": {
+                "userActivated": true,
+                "easyAIWorkflowOnboarded": true,
+                "firstSuccessfulWorkflowId": "7hJz5eQk12axtKwc",
+                "userActivatedAt": 1766242805704,
+                "npsSurvey": {
+                  "responded": true,
+                  "lastShownAt": 1767285413604
+                }
+              },
+              "disabled": false,
+              "mfaEnabled": false,
+              "lastActiveAt": "2026-01-01",
+              "isPending": false
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2026-01-01T16:36:51.189Z",
+  "versionCounter": 45,
+  "versionId": "0f6a0b2a-e370-41bf-9801-154699ad2d06"
+}
