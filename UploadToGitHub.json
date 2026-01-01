@@ -14,66 +14,6 @@
         ]
       ]
     },
-    "dataArray": {
-      "main": [
-        [
-          {
-            "node": "OneAtATime",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "same": {
-      "main": [
-        [
-          {
-            "node": "OneAtATime",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "different": {
-      "main": [
-        [
-          {
-            "node": "Edit",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "new": {
-      "main": [
-        [
-          {
-            "node": "Create",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "OneAtATime": {
-      "main": [
-        [
-          {
-            "node": "Grab File",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Workflow Detail",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Globals": {
       "main": [
         [
@@ -89,7 +29,7 @@
       "main": [
         [
           {
-            "node": "OneAtATime",
+            "node": "Loop",
             "type": "main",
             "index": 0
           }
@@ -100,7 +40,7 @@
       "main": [
         [
           {
-            "node": "OneAtATime",
+            "node": "Loop",
             "type": "main",
             "index": 0
           }
@@ -144,21 +84,21 @@
       "main": [
         [
           {
-            "node": "same",
+            "node": "Same",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "different",
+            "node": "Different",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "new",
+            "node": "New",
             "type": "main",
             "index": 0
           }
@@ -180,7 +120,7 @@
       "main": [
         [
           {
-            "node": "dataArray",
+            "node": "Split Out",
             "type": "main",
             "index": 0
           }
@@ -192,6 +132,66 @@
         [
           {
             "node": "Check Diff",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop": {
+      "main": [
+        [
+          {
+            "node": "Grab File",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Workflow Detail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Same": {
+      "main": [
+        [
+          {
+            "node": "Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Different": {
+      "main": [
+        [
+          {
+            "node": "Edit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New": {
+      "main": [
+        [
+          {
+            "node": "Create",
             "type": "main",
             "index": 0
           }
@@ -218,66 +218,6 @@
       ],
       "typeVersion": 1,
       "id": "0a333423-c5fd-4363-b760-6fae33f1e1b5"
-    },
-    {
-      "parameters": {
-        "functionCode": "const newItems = [];\nfor (item of items[0].json.data) {\n  newItems.push({json: item});\n}\nreturn newItems;"
-      },
-      "name": "dataArray",
-      "type": "n8n-nodes-base.function",
-      "position": [
-        0,
-        128
-      ],
-      "typeVersion": 1,
-      "id": "4d67b07e-90ee-4244-8a45-e4c8c81cb52b"
-    },
-    {
-      "parameters": {},
-      "name": "same",
-      "type": "n8n-nodes-base.noOp",
-      "position": [
-        1344,
-        -160
-      ],
-      "typeVersion": 1,
-      "id": "ff593d08-44a3-4fdb-8825-f2f3cd4f16ab"
-    },
-    {
-      "parameters": {},
-      "name": "different",
-      "type": "n8n-nodes-base.noOp",
-      "position": [
-        1344,
-        32
-      ],
-      "typeVersion": 1,
-      "id": "3222c693-904e-40d6-b491-c597d581df0f"
-    },
-    {
-      "parameters": {},
-      "name": "new",
-      "type": "n8n-nodes-base.noOp",
-      "position": [
-        1344,
-        224
-      ],
-      "typeVersion": 1,
-      "id": "9b061152-c838-4cbd-b8fa-245a53002ee3"
-    },
-    {
-      "parameters": {
-        "batchSize": 1,
-        "options": {}
-      },
-      "name": "OneAtATime",
-      "type": "n8n-nodes-base.splitInBatches",
-      "position": [
-        224,
-        128
-      ],
-      "typeVersion": 1,
-      "id": "469f1a85-f143-4451-b77e-7ed281b129d6"
     },
     {
       "parameters": {
@@ -321,8 +261,8 @@
       "name": "Edit",
       "type": "n8n-nodes-base.github",
       "position": [
-        1568,
-        208
+        1632,
+        112
       ],
       "typeVersion": 1,
       "webhookId": "0101e32d-d881-45d5-868d-7eb3ddc90bb4",
@@ -347,15 +287,15 @@
           "value": "={{ $('Globals').item.json.repo.name }}",
           "mode": ""
         },
-        "filePath": "={{ $('Globals').item.json.repo.path }}/{{ $('Workflow Detail').item.json.name }}.json",
+        "filePath": "={{ $('Workflow Detail').first().json.name }}.json",
         "fileContent": "={{$node[\"Check Diff\"].json[\"n8n_data_stringy\"]}}",
-        "commitMessage": "=[N8N Backup] {{ $('Workflow Detail').item.json.name }}.json ({{$json[\"github_status\"]}})"
+        "commitMessage": "=[n8n backup] {{ $('Workflow Detail').first().json.name }}.json ({{$json[\"github_status\"]}})"
       },
       "name": "Create",
       "type": "n8n-nodes-base.github",
       "position": [
-        1568,
-        416
+        1632,
+        368
       ],
       "typeVersion": 1,
       "webhookId": "ce951202-d4bd-4aca-a19b-22ad70cdf74c",
@@ -373,7 +313,7 @@
         "operation": "get",
         "owner": "={{$node[\"Globals\"].json[\"repo\"][\"owner\"]}}",
         "repository": "={{$node[\"Globals\"].json[\"repo\"][\"name\"]}}",
-        "filePath": "={{$node[\"Globals\"].json[\"repo\"][\"path\"]}}/{{$json[\"name\"]}}.json",
+        "filePath": "={{$json[\"name\"]}}.json",
         "asBinaryProperty": false,
         "additionalParameters": {}
       },
@@ -381,7 +321,7 @@
       "type": "n8n-nodes-base.github",
       "position": [
         448,
-        -128
+        0
       ],
       "typeVersion": 1,
       "alwaysOutputData": true,
@@ -409,7 +349,7 @@
       "type": "n8n-nodes-base.cron",
       "position": [
         -672,
-        208
+        224
       ],
       "typeVersion": 1,
       "id": "9e711f95-09d2-44a3-9702-0aa00e75a57d"
@@ -421,8 +361,8 @@
       "name": "Check Diff",
       "type": "n8n-nodes-base.function",
       "position": [
-        896,
-        -48
+        880,
+        128
       ],
       "typeVersion": 1,
       "id": "ce4e29cf-81e7-4a8f-ba44-81de46080be0"
@@ -450,8 +390,8 @@
       "name": "GitHub Status",
       "type": "n8n-nodes-base.switch",
       "position": [
-        1120,
-        -80
+        1104,
+        96
       ],
       "typeVersion": 1,
       "id": "0217480c-5266-4583-9768-6eab159069bd"
@@ -466,7 +406,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "position": [
         448,
-        144
+        256
       ],
       "typeVersion": 1,
       "id": "18b7d230-e6b9-45ea-8a12-c3c85bf8d436",
@@ -503,11 +443,72 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        688,
-        -48
+        672,
+        128
       ],
       "id": "09d7ae60-aadc-415e-9e27-52f91853d0d9",
       "name": "Merge"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "name": "Loop",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        224,
+        128
+      ],
+      "typeVersion": 1,
+      "id": "469f1a85-f143-4451-b77e-7ed281b129d6"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        0,
+        128
+      ],
+      "id": "a23b05f7-e5d6-439d-a67a-2a0238326254",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {},
+      "name": "Same",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        1392,
+        -192
+      ],
+      "typeVersion": 1,
+      "id": "ff593d08-44a3-4fdb-8825-f2f3cd4f16ab"
+    },
+    {
+      "parameters": {},
+      "name": "Different",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        1392,
+        112
+      ],
+      "typeVersion": 1,
+      "id": "3222c693-904e-40d6-b491-c597d581df0f"
+    },
+    {
+      "parameters": {},
+      "name": "New",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        1392,
+        368
+      ],
+      "typeVersion": 1,
+      "id": "9b061152-c838-4cbd-b8fa-245a53002ee3"
     }
   ],
   "pinData": {},
@@ -574,7 +575,7 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-01-01T18:28:59.841Z",
-  "versionCounter": 10,
-  "versionId": "3b77ecc2-7c53-4605-b5cf-902ec61c7fee"
+  "updatedAt": "2026-01-01T18:45:30.827Z",
+  "versionCounter": 11,
+  "versionId": "880039f4-68ab-4ec2-9115-5650ce7afd8f"
 }
