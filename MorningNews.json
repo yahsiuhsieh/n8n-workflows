@@ -2688,7 +2688,7 @@
             "userId": "049de407-c1f1-4531-9508-8d3d2d1d1297",
             "projectId": "bK0jph6zkEPxu4nf",
             "user": {
-              "updatedAt": "2026-01-02T16:00:10.444Z",
+              "updatedAt": "2026-01-03T16:00:18.055Z",
               "createdAt": "2025-12-17T20:44:15.006Z",
               "id": "049de407-c1f1-4531-9508-8d3d2d1d1297",
               "email": "arthur960304@gmail.com",
@@ -2713,7 +2713,7 @@
               },
               "disabled": false,
               "mfaEnabled": false,
-              "lastActiveAt": "2026-01-02",
+              "lastActiveAt": "2026-01-03",
               "isPending": false
             }
           }
@@ -2729,6 +2729,6 @@
   "tags": [],
   "triggerCount": 1,
   "updatedAt": "2026-01-01T19:06:13.637Z",
-  "versionCounter": 47,
+  "versionCounter": 48,
   "versionId": "0f6a0b2a-e370-41bf-9801-154699ad2d06"
 }
