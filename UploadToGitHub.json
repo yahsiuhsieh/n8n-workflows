@@ -1059,7 +1059,7 @@
             "userId": "049de407-c1f1-4531-9508-8d3d2d1d1297",
             "projectId": "bK0jph6zkEPxu4nf",
             "user": {
-              "updatedAt": "2026-01-22T16:00:47.818Z",
+              "updatedAt": "2026-01-23T16:00:47.733Z",
               "createdAt": "2025-12-17T20:44:15.006Z",
               "id": "049de407-c1f1-4531-9508-8d3d2d1d1297",
               "email": "arthur960304@gmail.com",
@@ -1084,7 +1084,7 @@
               },
               "disabled": false,
               "mfaEnabled": false,
-              "lastActiveAt": "2026-01-22",
+              "lastActiveAt": "2026-01-23",
               "isPending": false
             }
           }
